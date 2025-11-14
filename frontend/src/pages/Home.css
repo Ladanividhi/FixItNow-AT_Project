@@ -1,0 +1,136 @@
+/* Home.css — Light theme with gradients and subtle animations */
+
+:root {
+  --bg: #ffffff;
+  --text: #0f172a; /* slate-900 */
+  --muted: #475569; /* slate-600 */
+  --card: #ffffff;
+  --border: #e5e7eb; /* gray-200 */
+  --ring: #a5b4fc; /* indigo-300 */
+  --primary-start: #6366f1; /* indigo-500 */
+  --primary-end: #22d3ee; /* cyan-400 */
+}
+
+.homepage {
+  display: grid;
+  /* make the about column wider so the card fills more space */
+  grid-template-columns: 1fr 520px;
+  align-items: center;
+  gap: 2rem;
+  /* slightly reduce vertical min-height to tighten spacing */
+  min-height: 70vh;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(99,102,241,0.12), transparent 50%),
+    radial-gradient(900px 500px at 110% 10%, rgba(34,211,238,0.12), transparent 50%),
+    var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  padding: 3.5rem 6%;
+}
+
+.hero {
+  max-width: 720px;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0 0 1rem;
+}
+
+.hero .brand {
+  background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero p {
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 0 0 2rem;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 0.9rem 1.4rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+  will-change: transform;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.primary {
+  background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(99,102,241,0.25), 0 6px 12px rgba(34,211,238,0.18);
+}
+
+.primary:hover {
+  box-shadow: 0 14px 28px rgba(99,102,241,0.3), 0 10px 18px rgba(34,211,238,0.22);
+}
+
+.secondary {
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.secondary:hover {
+  border-color: var(--ring);
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+}
+
+.about {
+  background: var(--card);
+  /* larger padding and min-height to occupy more visual space */
+  padding: 2.25rem;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* center text vertically inside card */
+}
+
+.about h2 {
+  font-size: 1.6rem;
+  margin: 0 0 .5rem;
+}
+
+.about h2::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 4px;
+  margin-top: .6rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
+}
+
+.about p {
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+/* Removed hero image to keep layout focused — About panel sits on the right */
+
+@media (max-width: 980px) {
+  .homepage { grid-template-columns: 1fr; gap: 2rem; padding: 2.5rem 6%; }
+  .hero { text-align: center; margin: 0 auto; }
+  .about { margin-top: 0; }
+}
