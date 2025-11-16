@@ -29,7 +29,6 @@ FixItNow is a full-stack web application that connects users with reliable local
 - 🏢 **Provider Dashboard** - Accept/decline requests, manage profile, and view ratings
 - 📅 **Booking System** - Schedule services with preferred date and time
 - ⭐ **Rating & Reviews** - Rate and review service providers
-- 📧 **Email Notifications** - Providers receive email notifications for new bookings
 - 🔐 **Authentication** - Secure user and provider authentication
 
 ---
@@ -87,14 +86,6 @@ MONGO_URI=mongodb://localhost:27017/fixitnow
 
 # JWT Secret (change this in production!)
 JWT_SECRET=your_super_secret_jwt_key_here
-
-# SMTP Email Configuration (Optional - for real emails)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER=your_email@gmail.com
-SMTP_PASS=your_app_password
-EMAIL_FROM=no-reply@fixitnow.com
 ```
 
 #### 📝 Environment Variables Explained:
@@ -102,8 +93,6 @@ EMAIL_FROM=no-reply@fixitnow.com
 - **`MONGO_URI`** (Optional): MongoDB connection string. Defaults to `mongodb://localhost:27017/fixitnow` if not provided
 - **`JWT_SECRET`** (Optional): Secret key for JWT token generation. Defaults to `supersecret` if not set (⚠️ **Change this in production!**)
 - **SMTP Variables** (Optional): If not provided, the server will use Ethereal (test-only) email service for local development
-
-> 💡 **Tip**: For Gmail, you'll need to generate an [App Password](https://support.google.com/accounts/answer/185833) instead of using your regular password.
 
 ### Example `.env` File
 
@@ -173,10 +162,8 @@ If you have a MongoDB dump file:
 
 2. **Start the development server:**
    ```bash
-   npm run dev
+   node index.js
    ```
-
-   > ⚠️ **Note**: If `npm run dev` doesn't work, use `npm start` instead. The server will run on `http://localhost:5000`
 
    You should see:
    ```
@@ -195,10 +182,8 @@ If you have a MongoDB dump file:
 
 3. **Start the development server:**
    ```bash
-   npm run dev
+   npm start
    ```
-
-   > ⚠️ **Note**: If `npm run dev` doesn't work, use `npm start` instead. The frontend will run on `http://localhost:3000`
 
    The React app will automatically open in your browser at `http://localhost:3000`
 
@@ -206,10 +191,10 @@ If you have a MongoDB dump file:
 
 ```bash
 # Terminal 1 - Backend
-cd backend && npm run dev
+cd backend && node index.js
 
 # Terminal 2 - Frontend  
-cd frontend && npm run dev
+cd frontend && npm start
 ```
 
 ---
@@ -298,13 +283,6 @@ http://localhost:5000
   - Run `npm install` again
   - Make sure you're using Node.js v14 or higher
 
-#### ❌ Email Not Sending
-- **Problem**: Provider emails not being sent
-- **Solution**: 
-  - Check SMTP credentials in `.env` file
-  - If SMTP not configured, check server logs for Ethereal preview URL
-  - For Gmail, use App Password instead of regular password
-
 ### 🔍 Debugging Tips
 
 - Check server console logs for detailed error messages
@@ -333,10 +311,5 @@ Start by registering as a user or provider and explore the platform!
 
 ---
 
-## 📄 License
-
-This project is currently unlicensed. Add an appropriate LICENSE file if you plan to publish the repository.
-
----
-
 **Happy Coding! 🚀**
+
