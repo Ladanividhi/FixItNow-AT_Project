@@ -1,232 +1,342 @@
-# FixItNow
+# 🛠️ FixItNow
 
-FixItNow is a full-stack web application that connects users with local service providers (electricians, plumbers, carpenters, appliance repair, cleaners and more). This repository contains a React client and an Express/MongoDB server.
+**Your one-stop solution for all local home services!**
 
-This README documents the project, how to run it locally, the API, data models, environment variables (including SMTP for email notifications), and troubleshooting tips so you can deploy or continue development.
-
----
-
-## Table of contents
-- Project overview
-- Features
-- Architecture
-- Getting started (local development)
-  - Prerequisites
-  - Install and run server
-  - Install and run client
-- Environment variables
-- API reference (endpoints and payloads)
-- Data models
-- Email notifications
-- Common tasks and troubleshooting
-- Next steps & improvements
-- License
+FixItNow is a full-stack web application that connects users with reliable local service professionals including electricians, plumbers, carpenters, beauticians, appliance repair specialists, and many more. Whether you need a quick fix or a full service, we've got you covered.
 
 ---
 
-## Project overview
+## 📋 Table of Contents
 
-FixItNow aims to provide a marketplace for home services. Users can:
-- Browse services
-- Book a service and schedule a provider
-- View ongoing and past requests
-- Rate and review providers
+- [Features](#-features)
+- [Prerequisites](#-prerequisites)
+- [Installation](#-installation)
+  - [Backend Setup](#-backend-setup)
+  - [Frontend Setup](#-frontend-setup)
+- [Environment Variables](#-environment-variables)
+- [Database Setup](#-database-setup)
+- [Running the Project](#-running-the-project)
+- [Project Structure](#-project-structure)
+- [API Reference](#-api-reference)
+- [Troubleshooting](#-troubleshooting)
 
-Providers can:
-- Register as a provider
-- See incoming requests
-- Accept or decline requests
-- Receive ratings and feedback from users
+---
 
-This repository contains two main directories:
-- `client/` — React front-end (create-react-app style)
-- `server/` — Express API with MongoDB (mongoose models)
+## ✨ Features
 
-## Features
+- 🔍 **Service Catalog** - Browse through various service categories with detailed subservices
+- 👤 **User Dashboard** - Manage bookings, view service history, and rate providers
+- 🏢 **Provider Dashboard** - Accept/decline requests, manage profile, and view ratings
+- 📅 **Booking System** - Schedule services with preferred date and time
+- ⭐ **Rating & Reviews** - Rate and review service providers
+- 📧 **Email Notifications** - Providers receive email notifications for new bookings
+- 🔐 **Authentication** - Secure user and provider authentication
 
-- Service catalog with subservices
-- Provider discovery and selection when booking
-- Booking workflow with scheduling
-- Provider email notifications on bookings (SMTP or Ethereal fallback)
-- Provider and user dashboards
-- Ratings and feedback system
+---
 
-## Architecture
+## 🔧 Prerequisites
 
-- Frontend: React (functional components), CSS files under `client/src/pages`.
-- Backend: Node.js + Express, MongoDB via Mongoose. Routes live under `server/routes`.
-- Email: `nodemailer` used to notify providers on new bookings (configurable via environment variables).
+Before you begin, ensure you have the following installed on your system:
 
-## Getting started (local development)
+- **Node.js** (v14 or higher recommended) - [Download Node.js](https://nodejs.org/)
+- **npm** (comes with Node.js) or **yarn**
+- **MongoDB** (local installation or MongoDB Atlas account) - [Download MongoDB](https://www.mongodb.com/try/download/community)
+- **Git** (for cloning the repository)
 
-Prerequisites
-- Node.js (v14+ recommended)
-- npm
-- MongoDB (local or a cloud instance)
+---
 
-1) Clone the repository
+## 📦 Installation
+
+### 🔙 Backend Setup
+
+1. **Navigate to the backend directory:**
+   ```bash
+   cd backend
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Create a `.env` file** in the `backend` directory (see [Environment Variables](#-environment-variables) section below)
+
+### 🎨 Frontend Setup
+
+1. **Navigate to the frontend directory:**
+   ```bash
+   cd frontend
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+---
+
+## 🔐 Environment Variables
+
+### Backend `.env` File
+
+Create a `.env` file in the `backend` directory with the following variables:
+
+```env
+# MongoDB Connection
+MONGO_URI=mongodb://localhost:27017/fixitnow
+
+# JWT Secret (change this in production!)
+JWT_SECRET=your_super_secret_jwt_key_here
+
+# SMTP Email Configuration (Optional - for real emails)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
+EMAIL_FROM=no-reply@fixitnow.com
+```
+
+#### 📝 Environment Variables Explained:
+
+- **`MONGO_URI`** (Optional): MongoDB connection string. Defaults to `mongodb://localhost:27017/fixitnow` if not provided
+- **`JWT_SECRET`** (Optional): Secret key for JWT token generation. Defaults to `supersecret` if not set (⚠️ **Change this in production!**)
+- **SMTP Variables** (Optional): If not provided, the server will use Ethereal (test-only) email service for local development
+
+> 💡 **Tip**: For Gmail, you'll need to generate an [App Password](https://support.google.com/accounts/answer/185833) instead of using your regular password.
+
+### Example `.env` File
+
+If you're using MongoDB Atlas (cloud), your `.env` might look like:
+
+```env
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/fixitnow?retryWrites=true&w=majority
+JWT_SECRET=my_super_secret_key_12345
+```
+
+---
+
+## 🗄️ Database Setup
+
+You have two options to set up your database:
+
+### Option 1: Run Seed Script (Recommended for Development) 🌱
+
+The seed script will populate your database with default services and subservices.
+
+1. **Make sure MongoDB is running** (local or cloud)
+
+2. **Navigate to backend directory:**
+   ```bash
+   cd backend
+   ```
+
+3. **Run the seed script:**
+   ```bash
+   node src/seedServices.js
+   ```
+
+   You should see:
+   ```
+   📦 Connected to MongoDB. Seeding services...
+   ✅ Services inserted successfully!
+   ```
+
+### Option 2: Restore Database Dump 📥
+
+If you have a MongoDB dump file:
+
+1. **Make sure MongoDB is running**
+
+2. **Restore the dump:**
+   ```bash
+   mongorestore --db fixitnow /path/to/your/dump
+   ```
+
+   Or if using MongoDB Atlas:
+   ```bash
+   mongorestore --uri="mongodb+srv://username:password@cluster.mongodb.net/fixitnow" /path/to/your/dump
+   ```
+
+> ⚠️ **Note**: The seed script will automatically create the database and collections if they don't exist. Make sure your MongoDB connection is working before running the seed script.
+
+---
+
+## 🚀 Running the Project
+
+### Start Backend Server
+
+1. **Navigate to backend directory:**
+   ```bash
+   cd backend
+   ```
+
+2. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+   > ⚠️ **Note**: If `npm run dev` doesn't work, use `npm start` instead. The server will run on `http://localhost:5000`
+
+   You should see:
+   ```
+   ✅ MongoDB connected
+   🚀 Server running on port 5000
+   ```
+
+### Start Frontend Development Server
+
+1. **Open a new terminal window/tab**
+
+2. **Navigate to frontend directory:**
+   ```bash
+   cd frontend
+   ```
+
+3. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+   > ⚠️ **Note**: If `npm run dev` doesn't work, use `npm start` instead. The frontend will run on `http://localhost:3000`
+
+   The React app will automatically open in your browser at `http://localhost:3000`
+
+### 🎯 Quick Start Commands
 
 ```bash
-git clone <your-repo-url>
-cd FixItNow
+# Terminal 1 - Backend
+cd backend && npm run dev
+
+# Terminal 2 - Frontend  
+cd frontend && npm run dev
 ```
-
-2) Server setup
-
-```powershell
-cd server
-npm install
-# create .env with values (see Environment variables below)
-npm start
-```
-
-By default the server listens on port `5000` and connects to `mongodb://localhost:27017/fixitnow` unless `MONGO_URI` is provided.
-
-3) Client setup
-
-Open a new terminal and run:
-
-```powershell
-cd client
-npm install
-npm start
-```
-
-The client dev server runs on `http://localhost:3000` by default and proxies API requests to the server (as implemented in the client API helper).
-
-## Environment variables
-
-Create a `.env` file in `server/` (do not commit). The server already uses `dotenv`.
-
-Essential variables:
-
-- `MONGO_URI` (optional) — MongoDB connection string. Defaults to `mongodb://localhost:27017/fixitnow`.
-- `JWT_SECRET` (optional) — JSON Web Token secret for authentication. Defaults to `supersecret` if not set (replace in production).
-
-SMTP / Email variables (optional - recommended for real emails):
-
-- `SMTP_HOST` — e.g. `smtp.sendgrid.net` or your SMTP provider host
-- `SMTP_PORT` — e.g. `587`
-- `SMTP_SECURE` — `true` or `false` (port 465 typically uses secure=true)
-- `SMTP_USER` — SMTP username
-- `SMTP_PASS` — SMTP password
-- `EMAIL_FROM` — optional "From" address for outgoing emails (e.g. `no-reply@yourdomain.com`)
-
-If SMTP vars are not provided the server falls back to an Ethereal test account and will output an Ethereal preview URL in the logs (good for local testing).
-
-## API reference
-
-Base URL (local): `http://localhost:5000`
-
-Notes: Many endpoints are in `server/routes`. Below are the key endpoints and example shapes.
-
-Auth
-- POST `/auth/register` — Register user
-  - Body: { name, email, password, phone, address }
-- POST `/auth/login` — Login (user or provider)
-  - Body: { email, password }
-  - Response: { token, user }
-
-Provider register
-- POST `/auth/provider-register` — Register as a provider (controller handles)
-
-Services
-- GET `/services` — Get all services (seeding occurs if empty)
-- GET `/services/providers?service=Plumber&subservice=Tap Installation` — Get providers filtered by service/subservice
-- POST `/services/book` — Create a service request (booking)
-  - Body: { userId, providerId, service, subservice, address, description, scheduledFor }
-  - Response: { message, request }
-  - After creation, provider receives an email (if provider email exists). The API returns the created request even if email fails.
-
-Requests
-- GET `/requests` — List requests. Query params: `userId`, `providerId`, `status`, `q`
-  - Response: array of requests with fields: `_id, service, subservice, status, providerId, providerName, userId, userName, scheduledFor, address, description`
-- PATCH `/requests/:id/accept` — Provider accepts request
-- PATCH `/requests/:id/decline` — Provider declines request; Body: { reason }
-- PATCH `/requests/:id/complete` — Mark request as completed, optionally create rating
-  - Body: { rating, comment, userId, providerId }
-
-Feedback
-- GET `/feedback?userId=...` or `/feedback?providerId=...` — Get feedback for a user or provider
-
-Provider
-- POST `/provider/register` — Register provider (legacy in `providerRoutes`)
-- PATCH `/provider/:id` — Update provider profile
-- GET `/provider/:id` — Get provider profile (includes computed rating)
-
-More routes: look into `server/routes` for small utilities and edge-case behaviors.
-
-## Data models (Mongoose)
-
-Key models are in `server/models`.
-
-- User (`server/models/User.js`)
-  - name, email, password, phone, address, role
-
-- ServiceProvider (`server/models/ServiceProvider.js`)
-  - name, email, password, phone, address, services (array of { category, subservices }), experience, rating, ratingCount
-
-- Service (`server/models/Service.js`)
-  - name, subservices [{ name, basePrice }]
-
-- Request (`server/models/Request.js`)
-  - userId, providerId, service, subservice, address, decription (typo preserved), status (Pending/Accepted/In Progress/Completed/Cancelled/Declined), acceptedAt, declinedAt, cancelReason, scheduledFor, createdAt
-
-- Feedback (`server/models/Feedback.js`)
-  - userId, providerId, rating (1-5), comment, createdAt
-
-Note: The `Request` model uses the field `decription` (typo) for the request description. Several routes already handle both `description` and `decription` when reading/writing — consider normalizing the field to `description` in a future change and migrating stored records.
-
-## Email notifications
-
-When a booking is created via `POST /services/book`, the server attempts to send an email to the provider's email address. Behavior:
-
-- If SMTP environment variables are configured, they are used to send a real email.
-- If SMTP is not configured, an Ethereal (test-only) account is created and used; the server logs a preview URL which you can open in the browser to view the message.
-- Email sending is best-effort and runs asynchronously; request creation is not blocked by email errors.
-
-Example: in server logs you might see:
-
-```
-Provider notification email sent: <message-id>
-Preview URL: https://ethereal.email/message/....
-```
-
-## Common tasks and troubleshooting
-
-- If services don't appear, the server will seed default services on first GET /services. Check server logs for seed messages.
-- If provider emails are not delivered in production, ensure SMTP credentials are correct and ports are open.
-- If the client shows stale content, clear browser cache or restart the dev server.
-
-Debugging tips
-- Check server logs (errors printed to console) when booking or sending emails.
-- Use Postman or curl to exercise the API endpoints directly for faster debugging.
-
-Example curl to create a booking (replace IDs):
-
-```bash
-curl -X POST http://localhost:5000/services/book \
-  -H "Content-Type: application/json" \
-  -d '{"userId":"<userId>","providerId":"<providerId>","service":"Plumber","address":"123 Main St","scheduledFor":"2025-10-15T09:30:00.000Z"}'
-```
-
-## Next steps & improvements
-
-- Normalize `decription` -> `description` in Request model and migrate any existing records.
-- Add authentication middleware and protect endpoints (the current code uses tokens at login but many routes are open).
-- Add unit/integration tests (example: mock `nodemailer` and assert email is attempted).
-- Improve provider filtering logic in `/services/providers` to precisely match availability, service categories, and subservices.
-- Add pagination and rate limiting to heavy endpoints.
-
-## License
-
-This project currently has no license file. Add an appropriate LICENSE if you plan to publish the repo.
 
 ---
 
-If you'd like, I can:
-- Add a CONTRIBUTING.md and code style guidelines
-- Create a migration script to rename `decription` -> `description` safely
-- Add an automated test for the email path (mocking `nodemailer`)
+## 📁 Project Structure
 
-Tell me which of the above you'd like next and I'll implement it.
+```
+FixItNow/
+├── backend/                 # Backend server
+│   ├── src/
+│   │   ├── controllers/    # Request handlers
+│   │   ├── models/          # MongoDB models
+│   │   ├── routes/          # API routes
+│   │   ├── seedServices.js  # Database seed script
+│   │   └── index.js         # Server entry point
+│   ├── .env                 # Environment variables (create this)
+│   └── package.json
+│
+├── frontend/                # React frontend
+│   ├── src/
+│   │   ├── pages/           # React components
+│   │   ├── api.js           # API helper
+│   │   └── App.js           # Main app component
+│   └── package.json
+│
+└── README.md
+```
+
+---
+
+## 🔌 API Reference
+
+### Base URL
+```
+http://localhost:5000
+```
+
+### Key Endpoints
+
+#### Authentication
+- `POST /auth/register` - Register a new user
+- `POST /auth/login` - Login (user or provider)
+- `POST /auth/provider-register` - Register as a service provider
+
+#### Services
+- `GET /services` - Get all available services
+- `GET /services/providers?service=Plumber&subservice=Tap Installation` - Get providers by service
+- `POST /services/book` - Book a service
+
+#### Requests
+- `GET /requests` - Get requests (supports query params: `userId`, `providerId`, `status`)
+- `PATCH /requests/:id/accept` - Accept a request (provider)
+- `PATCH /requests/:id/decline` - Decline a request (provider)
+- `PATCH /requests/:id/complete` - Mark request as completed
+
+#### Feedback
+- `GET /feedback?userId=...` - Get user's ratings
+- `GET /feedback?providerId=...` - Get provider's ratings
+
+---
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### ❌ MongoDB Connection Error
+- **Problem**: `MongoDB connection error`
+- **Solution**: 
+  - Make sure MongoDB is running: `mongod` (for local) or check your Atlas connection string
+  - Verify your `MONGO_URI` in `.env` file is correct
+
+#### ❌ Port Already in Use
+- **Problem**: `Port 5000 is already in use`
+- **Solution**: 
+  - Change the port in `backend/src/index.js` or kill the process using port 5000
+  - For Windows: `netstat -ano | findstr :5000` then `taskkill /PID <PID> /F`
+
+#### ❌ Services Not Appearing
+- **Problem**: No services showing in the frontend
+- **Solution**: Run the seed script: `cd backend && node src/seedServices.js`
+
+#### ❌ npm install Fails
+- **Problem**: Errors during `npm install`
+- **Solution**: 
+  - Delete `node_modules` and `package-lock.json`
+  - Run `npm install` again
+  - Make sure you're using Node.js v14 or higher
+
+#### ❌ Email Not Sending
+- **Problem**: Provider emails not being sent
+- **Solution**: 
+  - Check SMTP credentials in `.env` file
+  - If SMTP not configured, check server logs for Ethereal preview URL
+  - For Gmail, use App Password instead of regular password
+
+### 🔍 Debugging Tips
+
+- Check server console logs for detailed error messages
+- Use browser DevTools (F12) to check network requests
+- Verify environment variables are loaded correctly
+- Test API endpoints directly using Postman or curl
+
+---
+
+## 📝 Additional Notes
+
+- The server automatically seeds services on first `GET /services` request if the database is empty
+- Email notifications use Ethereal (test service) if SMTP is not configured
+- All service providers are verified and rated by real customers
+- The application uses JWT tokens for authentication
+
+---
+
+## 🎉 You're All Set!
+
+Once both servers are running:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5000
+
+Start by registering as a user or provider and explore the platform!
+
+---
+
+## 📄 License
+
+This project is currently unlicensed. Add an appropriate LICENSE file if you plan to publish the repository.
+
+---
+
+**Happy Coding! 🚀**
